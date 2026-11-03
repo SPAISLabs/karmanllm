@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>KarmanLang Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="/assets/kl.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/admin"><b>KarmanLang</b><span>· Admin</span></a>
+  <div class="who" id="who" hidden><button class="btn ghost" id="btn-signout">Sign out</button></div>
+</header>
+
+<main class="main">
+  <section class="card signin" id="signin" hidden aria-labelledby="signin-h">
+    <h1 id="signin-h">Admin sign-in</h1>
+    <form id="pw-form" novalidate style="display:flex;flex-direction:column;gap:10px">
+      <label class="f" for="pw">Password<input type="password" id="pw" autocomplete="current-password" required></label>
+      <button class="btn primary block" id="pw-btn" type="submit">Sign in</button>
+    </form>
+    <p class="status" id="signin-status" role="status"></p>
+  </section>
+
+  <div class="console" id="console" hidden>
+    <aside class="card" style="padding:14px">
+      <div class="row"><span class="eyebrow">Agents</span><span class="spacer"></span><button class="btn" id="btn-new-agent">+ New</button></div>
+      <nav class="agentlist" id="agentlist" aria-label="Agents"></nav>
+      <hr style="border:0;border-top:1px solid var(--line);width:100%">
+      <button class="btn" id="btn-connect">Connect Claude / ChatGPT / CLI</button>
+    </aside>
+
+    <section class="card" id="pane" aria-live="polite">
+      <div id="empty"><h2>Deploy your first agent</h2><p class="muted" style="margin:0">Use <b>+ New</b>, or connect KarmanLang to Claude and say "deploy this agent".</p></div>
+
+      <!-- connect -->
+      <div id="connect" hidden style="display:flex;flex-direction:column;gap:14px">
+        <h2>Connect KarmanLang</h2>
+        <p class="muted" style="margin:0">A connector token lets Claude, ChatGPT or the command line deploy agents and create access codes. Treat it like a password.</p>
+        <div class="row"><input type="text" id="tok-name" placeholder="Name, e.g. Claude" style="max-width:320px"><button class="btn primary" id="btn-tok">Create connector token</button></div>
+        <div class="secret" id="tok-secret" hidden>
+          <b>Copy this now. It won't be shown again.</b>
+          <div><span class="eyebrow">Connector URL</span><div class="linkbox"><span id="tok-url"></span><button class="btn" id="tok-copy">Copy</button></div></div>
+          <div><span class="eyebrow">Command line</span><pre class="cmd" id="tok-cli"></pre></div>
+        </div>
+        <div class="tbl-wrap"><table id="tok-table"></table></div>
+        <h3>Using it</h3>
+        <ul class="small" style="margin:0;padding-left:18px">
+          <li><b>Claude:</b> Settings → Connectors → Add custom connector → paste the URL. Then: "Deploy this agent to KarmanLang and make a code for Ana."</li>
+          <li><b>ChatGPT:</b> Settings → Apps &amp; Connectors → Advanced → Developer mode → Create, and paste the same URL.</li>
+          <li><b>Command line:</b> <code class="inline">karman deploy nqry --instructions prompt.md</code>, <code class="inline">karman code nqry "Ana"</code>.</li>
+        </ul>
+      </div>
+
+      <!-- agent -->
+      <div id="agent" hidden style="display:flex;flex-direction:column;gap:14px">
+        <div class="row"><h2 id="a-name"></h2><span class="pill" id="a-status"></span><span class="spacer"></span><a class="btn" id="a-open" target="_blank" rel="noopener">Open ↗</a></div>
+        <div class="tabs" role="tablist">
+          <button role="tab" data-tab="share" aria-selected="true">Share</button>
+          <button role="tab" data-tab="settings">Settings</button>
+          <button role="tab" data-tab="usage">Usage</button>
+          <button role="tab" data-tab="convos">Conversations</button>
+        </div>
+
+        <div data-panel="share" style="display:flex;flex-direction:column;gap:14px">
+          <div><span class="eyebrow">Link</span><div class="linkbox"><span id="a-url"></span><button class="btn" id="a-url-copy">Copy</button></div></div>
+          <form id="code-form" class="grid2" style="align-items:end">
+            <label class="f">Who it's for<span class="hint">Only you see this</span><input type="text" id="c-label" maxlength="80" placeholder="Ana – Lincoln HS"></label>
+            <label class="f">Expires after (days)<span class="hint">Blank: never</span><input type="number" id="c-days" min="1" max="3650"></label>
+            <label class="f">Replies per day<span class="hint">Blank: agent default</span><input type="number" id="c-limit" min="1" max="10000"></label>
+            <button class="btn primary" type="submit">Generate code</button>
+          </form>
+          <div class="secret" id="c-new" hidden>
+            <b>New code. Copy it now; only the last 4 characters are kept.</b>
+            <div class="linkbox"><span id="c-code" style="font-size:18px;letter-spacing:.08em"></span><button class="btn" id="c-code-copy">Copy code</button></div>
+            <div class="linkbox"><span id="c-link"></span><button class="btn" id="c-link-copy">Copy sign-in link</button></div>
+            <span class="small muted">The sign-in link includes the code, so opening it signs the person in.</span>
+          </div>
+          <div class="tbl-wrap"><table id="codes"></table></div>
+        </div>
+
+        <form data-panel="settings" id="settings" hidden style="display:flex;flex-direction:column;gap:14px"></form>
+        <div data-panel="usage" hidden id="usage"></div>
+        <div data-panel="convos" hidden id="convos"></div>
+      </div>
+
+      <!-- new agent -->
+      <form id="newagent" hidden style="display:flex;flex-direction:column;gap:14px"></form>
+    </section>
+  </div>
+</main>
+
+<script src="/assets/core.js"></script>
+<script src="/assets/admin.js"></script>
+</body>
+</html>

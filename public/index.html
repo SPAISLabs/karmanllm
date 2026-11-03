@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>KarmanLang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="/assets/kl.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/"><b>KarmanLang</b><span id="brand-sub"></span></a>
+  <div class="who" id="who" hidden><a id="who-admin" href="/admin" hidden>Admin</a><button class="btn ghost" id="btn-signout">Sign out</button></div>
+</header>
+
+<main class="main narrow">
+  <div class="notice" id="notice" role="note" hidden></div>
+
+  <section class="card signin" id="signin" hidden aria-labelledby="signin-h">
+    <div>
+      <h1 id="signin-h">Enter your access code</h1>
+      <p class="muted" id="signin-sub" style="margin:6px 0 0"></p>
+    </div>
+    <form id="code-form" novalidate style="display:flex;flex-direction:column;gap:10px">
+      <label class="f" for="code">Access code
+        <input type="text" id="code" autocomplete="one-time-code" autocapitalize="characters" spellcheck="false" required
+          placeholder="XXXX-XXXX-XXXX" style="font-family:var(--f-mono);letter-spacing:.08em;text-transform:uppercase">
+      </label>
+      <button class="btn primary block" id="code-btn" type="submit">Continue</button>
+    </form>
+    <p class="status" id="signin-status" role="status"></p>
+  </section>
+
+  <section class="card" id="home" hidden>
+    <h1>KarmanLang</h1>
+    <p class="muted" style="margin:0">Open the agent link you were given, then enter your access code.</p>
+    <p style="margin:0"><a href="/admin">Owner sign-in</a></p>
+  </section>
+
+  <section class="card" id="missing" hidden>
+    <h2>No agent here</h2>
+    <p class="muted" id="missing-msg" style="margin:0"></p>
+  </section>
+
+  <section class="chat" id="chat" hidden aria-labelledby="agent-name">
+    <div class="chat-head">
+      <div style="min-width:0"><h2 id="agent-name"></h2><div class="small muted" id="agent-desc"></div></div>
+      <span class="spacer"></span>
+      <span class="small muted" id="left"></span>
+      <button class="btn" id="btn-new">New conversation</button>
+    </div>
+    <div class="log" id="log" aria-live="polite"></div>
+    <form class="compose" id="compose">
+      <label class="eyebrow" for="input">Message</label>
+      <textarea id="input" maxlength="8000" rows="3" placeholder="Type a message. Ctrl/⌘ + Enter to send."></textarea>
+      <div class="row"><span class="status" id="status" role="status"></span><span class="spacer"></span><button class="btn primary" id="btn-send" type="submit">Send</button></div>
+    </form>
+  </section>
+</main>
+
+<script src="/assets/core.js"></script>
+<script src="/assets/app.js"></script>
+</body>
+</html>

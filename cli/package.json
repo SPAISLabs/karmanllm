@@ -1,0 +1,10 @@
+{
+  "name": "karmanlang-cli",
+  "version": "0.1.0",
+  "description": "Deploy and manage KarmanLang agents from the terminal",
+  "type": "module",
+  "bin": { "karman": "./karman.mjs" },
+  "engines": { "node": ">=18" },
+  "license": "UNLICENSED",
+  "private": true
+}

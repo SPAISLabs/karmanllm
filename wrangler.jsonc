@@ -1,0 +1,25 @@
+{
+  // KarmanLang: one Worker serves the site (public/), the API (/api) and the connector (/mcp).
+  // Secrets (Cloudflare dashboard → this Worker → Settings → Variables and Secrets):
+  //   ANTHROPIC_API_KEY   the model key
+  //   ADMIN_PASSWORD      the password for /admin
+  "name": "karmanllm",
+  "main": "src/worker.js",
+  "compatibility_date": "2025-09-01",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "karmanlang",
+      "database_id": "5e7530c4-67ec-4bb7-b817-1b782ff63d25"
+    }
+  ],
+  "vars": {
+    "DEFAULT_MODEL": "claude-sonnet-5-5"
+  },
+  "observability": { "enabled": true }
+}
